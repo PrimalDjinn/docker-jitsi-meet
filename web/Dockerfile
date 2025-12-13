@@ -1,5 +1,21 @@
 ARG JITSI_REPO=jitsi
 ARG BASE_TAG=latest
+FROM node:22-slim as builder
+
+WORKDIR /home/node
+
+RUN apt-get update && \
+    apt-get install -y git make g++ bzip2 python3
+
+RUN git clone https://github.com/PrimalDjinn/jitsi-meet.git
+
+WORKDIR /home/node/jitsi-meet
+
+RUN npm install
+RUN make source-package
+
+RUN tar -xjf jitsi-meet.tar.bz2
+
 FROM ${JITSI_REPO}/base:${BASE_TAG}
 
 LABEL org.opencontainers.image.title="Jitsi Meet"
@@ -11,8 +27,10 @@ LABEL org.opencontainers.image.documentation="https://jitsi.github.io/handbook/"
 ADD https://raw.githubusercontent.com/acmesh-official/acme.sh/3.0.7/acme.sh /opt
 COPY rootfs/ /
 
+COPY --from=builder /home/node/jitsi-meet/jitsi-meet /usr/share/jitsi-meet
+
 RUN apt-dpkg-wrap apt-get update && \
-    apt-dpkg-wrap apt-get install -y dnsutils cron nginx-extras jitsi-meet-web socat curl jq && \
+    apt-dpkg-wrap apt-get install -y dnsutils cron nginx-extras socat curl jq && \
     mv /usr/share/jitsi-meet/interface_config.js /defaults && \
     rm -f /etc/nginx/conf.d/default.conf && \
     apt-cleanup

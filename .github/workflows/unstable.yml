@@ -70,19 +70,20 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./base
           tags: |
-            ${{ secrets.JITSI_REPO }}/base:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/base:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/base:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/base:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
           build-args: |
             JITSI_RELEASE=unstable
 
@@ -90,20 +91,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: [version, base-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/base:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/base:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/base:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/base:${{ needs.version.outputs.date }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/base:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/base:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/base:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/base:${{ needs.version.outputs.base }}-arm64
 
   base-java-arch:
     runs-on: ${{ matrix.config.os }}
@@ -121,41 +123,43 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./base-java
           tags: |
-            ${{ secrets.JITSI_REPO }}/base-java:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/base-java:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/base-java:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/base-java:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   base-java:
     runs-on: ubuntu-latest
     needs: [version, base-java-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/base-java:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/base-java:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/base-java:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/base-java:${{ needs.version.outputs.date }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/base-java:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/base-java:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/base-java:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/base-java:${{ needs.version.outputs.base }}-arm64
 
   jibri-arch:
     runs-on: ${{ matrix.config.os }}
@@ -173,43 +177,45 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./jibri
           tags: |
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.jibri_version }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.jibri_version }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   jibri:
     runs-on: ubuntu-latest
     needs: [version, jibri-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.date }}
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.jibri_version }}
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.jibri_version }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/jibri:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/jibri:${{ needs.version.outputs.base }}-arm64
 
   jicofo-arch:
     runs-on: ${{ matrix.config.os }}
@@ -227,43 +233,45 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./jicofo
           tags: |
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.jicofo_version }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.jicofo_version }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   jicofo:
     runs-on: ubuntu-latest
     needs: [version, jicofo-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.date }}
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.jicofo_version }}
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.jicofo_version }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/jicofo:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/jicofo:${{ needs.version.outputs.base }}-arm64
 
   jigasi-arch:
     runs-on: ${{ matrix.config.os }}
@@ -281,43 +289,45 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./jigasi
           tags: |
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.jigasi_version }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.jigasi_version }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   jigasi:
     runs-on: ubuntu-latest
     needs: [version, jigasi-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.date }}
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.jigasi_version }}
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.jigasi_version }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/jigasi:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/jigasi:${{ needs.version.outputs.base }}-arm64
 
   jvb-arch:
     runs-on: ${{ matrix.config.os }}
@@ -335,43 +345,45 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./jvb
           tags: |
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.jvb_version }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.jvb_version }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   jvb:
     runs-on: ubuntu-latest
     needs: [version, jvb-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.date }}
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.jvb_version }}
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.jvb_version }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/jvb:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/jvb:${{ needs.version.outputs.base }}-arm64
 
   prosody-arch:
     runs-on: ${{ matrix.config.os }}
@@ -389,43 +401,45 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./prosody
           tags: |
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.prosody_version }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.prosody_version }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   prosody:
     runs-on: ubuntu-latest
     needs: [version, prosody-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.date }}
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.prosody_version }}
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.prosody_version }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/prosody:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/prosody:${{ needs.version.outputs.base }}-arm64
 
   web-arch:
     runs-on: ${{ matrix.config.os }}
@@ -443,40 +457,42 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           context: ./web
           tags: |
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.web_version }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.base }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.date }}-${{ matrix.config.arch }}
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.web_version }}-${{ matrix.config.arch }}
           build-args: |
-            JITSI_REPO=${{ secrets.JITSI_REPO }}
+            JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
             BASE_TAG=${{ needs.version.outputs.base }}
 
   web:
     runs-on: ubuntu-latest
     needs: [version, web-arch]
     steps:
-      - name: Login to DockerHub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Docker Manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: |
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.base }}
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.date }}
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.web_version }}
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.base }}
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.date }}
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.web_version }}
           sources: |
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.base }}-amd64
-            ${{ secrets.JITSI_REPO }}/web:${{ needs.version.outputs.base }}-arm64
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.base }}-amd64
+            ghcr.io/primaldjinn/jitsi-meet/web:${{ needs.version.outputs.base }}-arm64
