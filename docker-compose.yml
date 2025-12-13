@@ -1,7 +1,7 @@
 services:
     # Frontend
     web:
-        image: ghcr.io/primaldjinn/jitsi-meet/web:${JITSI_IMAGE_VERSION:-unstable}
+        image: ghcr.io/primaldjinn/jitsi-meet/web:${JITSI_IMAGE_VERSION:-stable-0}
         restart: ${RESTART_POLICY:-unless-stopped}
         ports:
             - '${HTTP_PORT}:80'
@@ -197,7 +197,7 @@ services:
 
     # XMPP server
     prosody:
-        image: ghcr.io/primaldjinn/jitsi-meet/prosody:${JITSI_IMAGE_VERSION:-unstable}
+        image: ghcr.io/primaldjinn/jitsi-meet/prosody:${JITSI_IMAGE_VERSION:-stable-0}
         restart: ${RESTART_POLICY:-unless-stopped}
         expose:
             - '${XMPP_PORT:-5222}'
@@ -348,7 +348,7 @@ services:
 
     # Focus component
     jicofo:
-        image: ghcr.io/primaldjinn/jitsi-meet/jicofo:${JITSI_IMAGE_VERSION:-unstable}
+        image: ghcr.io/primaldjinn/jitsi-meet/jicofo:${JITSI_IMAGE_VERSION:-stable-0}
         restart: ${RESTART_POLICY:-unless-stopped}
         ports:
             - '127.0.0.1:${JICOFO_REST_PORT:-8888}:8888'
@@ -444,7 +444,7 @@ services:
 
     # Video bridge
     jvb:
-        image: ghcr.io/primaldjinn/jitsi-meet/jvb:${JITSI_IMAGE_VERSION:-unstable}
+        image: ghcr.io/primaldjinn/jitsi-meet/jvb:${JITSI_IMAGE_VERSION:-stable-0}
         restart: ${RESTART_POLICY:-unless-stopped}
         ports:
             - '${JVB_PORT:-10000}:${JVB_PORT:-10000}/udp'
