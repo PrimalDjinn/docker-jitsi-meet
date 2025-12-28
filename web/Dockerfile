@@ -1,5 +1,5 @@
-ARG JITSI_REPO=jitsi
-ARG BASE_TAG=latest
+ARG JITSI_REPO=ghcr.io/primaldjinn/jitsi-meet
+ARG BASE_TAG=stable-1
 FROM node:22-slim as builder
 
 WORKDIR /home/node
