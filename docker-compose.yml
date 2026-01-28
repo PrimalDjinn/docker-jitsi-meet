@@ -9,29 +9,12 @@ services:
             - ${CONFIG}/transcripts:/usr/share/jitsi-meet/transcripts:Z
             - ${CONFIG}/web/load-test:/usr/share/jitsi-meet/load-test:Z
         labels:
-            # --------------------------------------------------
-            # Enable Traefik
-            # --------------------------------------------------
-            - "traefik.enable=true"
-            - "service=jitsi-web"
-            - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80"
-    
-            # ==================================================
-            # ALLOW ONLY /meet/*
-            # ==================================================
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-meet.rule=Host(`${DOMAIN}`) && PathPrefix(`/meet`)"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-meet.entrypoints=web,websecure"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-meet.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-meet.priority=100"
-
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.rule=Host(`${DOMAIN}`) && PathPrefix(`/`)"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.entrypoints=web,websecure"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.priority=10"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.middlewares=${COMPOSE_PROJECT_NAME}-deny"
-            
-            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-deny.returnstatus.statuscode=403"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
-
+          - "service=jitsi-web"
+          - "traefik.enable=true"
+          - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`)"
+          - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web,websecure"
+          - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
+          - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80"
 
         environment:
             - AMPLITUDE_ID
@@ -41,6 +24,7 @@ services:
             - AUTO_CAPTION_ON_RECORD
             - BRANDING_DATA_URL
             - BWE_ESTIMATOR_ENGINE
+            - BOSH_RELATIVE
             - CHROME_EXTENSION_BANNER_JSON
             - CODEC_ORDER_JVB
             - CODEC_ORDER_JVB_MOBILE
@@ -150,6 +134,7 @@ services:
             - NGINX_WORKER_CONNECTIONS
             - PEOPLE_SEARCH_URL
             - PREFERRED_LANGUAGE
+            - PUBLIC_URLPathPrefix(`/`)
             - P2P_PREFERRED_CODEC
             - P2P_STUN_SERVERS
             - RESOLUTION
@@ -194,6 +179,7 @@ services:
             - VIDEOQUALITY_BITRATE_AV1_SS_HIGH
             - VIDEOQUALITY_PREFERRED_CODEC
             - XMPP_AUTH_DOMAIN
+            - XMPP_BOSH_URL_BASE
             - XMPP_DOMAIN
             - XMPP_GUEST_DOMAIN
             - XMPP_MUC_DOMAIN
@@ -202,10 +188,9 @@ services:
             - XMPP_RECORDER_DOMAIN
             - WHITEBOARD_COLLAB_SERVER_PUBLIC_URL
             - WHITEBOARD_COLLAB_SERVER_URL_BASE
-            - PUBLIC_URL
             - BOSH_RELATIVE=/meet/http-bind
             - XMPP_BOSH_URL_BASE=/meet/http-bind
-
+            
         networks:
             meet.jitsi:
         depends_on:
