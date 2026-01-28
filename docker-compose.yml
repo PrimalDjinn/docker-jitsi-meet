@@ -30,6 +30,7 @@ services:
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.middlewares=${COMPOSE_PROJECT_NAME}-deny"
             
             - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-deny.returnstatus.statuscode=403"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
 
 
         environment:
