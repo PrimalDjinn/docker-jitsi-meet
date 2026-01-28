@@ -12,22 +12,11 @@ services:
             - "service=jitsi-web"
             - "traefik.enable=true"
             # - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`)"
-            # - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web,websecure"
-            # - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
-            
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
             - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80"
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`) && PathPrefix(`/meet/`)"
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web,websecure"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.priority=100"
-        
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.rule=Host(`${DOMAIN}`) && Path(`/`)"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.entrypoints=web,websecure"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.priority=10"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.middlewares=${COMPOSE_PROJECT_NAME}-deny"
-                
-            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-deny.returnstatus.statuscode=403"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-deny.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-dokployresolver}"
 
         environment:
             - AMPLITUDE_ID
