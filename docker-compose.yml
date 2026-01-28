@@ -190,8 +190,8 @@ services:
             - XMPP_RECORDER_DOMAIN
             - WHITEBOARD_COLLAB_SERVER_PUBLIC_URL
             - WHITEBOARD_COLLAB_SERVER_URL_BASE
-            - BOSH_RELATIVE=/meet/http-bind
-            - XMPP_BOSH_URL_BASE=/meet/http-bind
+            - BOSH_RELATIVE
+            - XMPP_BOSH_URL_BASE
             
         networks:
             meet.jitsi:
